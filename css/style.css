@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: lightseagreen !important;
+
+    height: 100vh !important;
+}
+
+/* board custom */
+.board {
+    display: flex;
+    flex-wrap: wrap;
+    height: 70%;
+    aspect-ratio: 1;
+}
+
+.cell {
+    width: calc(100% / 8);
+    aspect-ratio: 1;
+}
+
+.light-square {
+    background-color: #e8f5e9;
+}
+
+.dark-square {
+    background-color: #c8e6c9;
+}
