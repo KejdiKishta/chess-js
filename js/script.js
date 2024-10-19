@@ -27,8 +27,8 @@ for (let c = 1; c <= 64; c++) {
         piece = document.createElement('div');
     }
     
-    // define piece type and add piece
     if (piece) {
+        // define piece type
         if (c === 1 || c === 8 || c === 57 || c === 64) {
             piece.className = (c === 1 || c === 8 ? 'white-rook' : 'black-rook');
         } else if (c === 2 || c === 7 || c === 58 || c === 63) { 
@@ -43,6 +43,16 @@ for (let c = 1; c <= 64; c++) {
             piece.className = (c > 8 && c < 17 ? 'white-pawn' : 'black-pawn')
         }
 
+        // add piece
         document.querySelector(`[data-cell='${c}']`).appendChild(piece);
     }
 }
+
+// select all pieces
+const cells = document.querySelectorAll('.cell');
+cells.forEach(cell => {
+    const piece = cell.firstChild;
+    if (piece) {
+        console.log(piece);
+    }
+});
