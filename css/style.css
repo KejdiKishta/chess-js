@@ -53,51 +53,51 @@ body {
 }
 
 /* white-pieces */
-.white-rook {
+.white.rook {
     background-image: url('../assets/white-rook.svg');
 }
 
-.white-knight {
+.white.knight {
     background-image: url('../assets/white-knight.svg');
 }
 
-.white-bishop {
+.white.bishop {
     background-image: url('../assets/white-bishop.svg');
 }
 
-.white-queen {
+.white.queen {
     background-image: url('../assets/white-queen.svg');
 }
 
-.white-king {
+.white.king {
     background-image: url('../assets/white-king.svg');
 }
 
-.white-pawn {
+.white.pawn {
     background-image: url('../assets/white-pawn.svg');
 }
 
 /* black-pieces */
-.black-rook {
+.black.rook {
     background-image: url('../assets/black-rook.svg');
 }
 
-.black-knight {
-    background-image: url('../assets/black-king.svg');
+.black.knight {
+    background-image: url('../assets/black-knight.svg');
 }
 
-.black-bishop {
+.black.bishop {
     background-image: url('../assets/black-bishop.svg');
 }
 
-.black-queen {
+.black.queen {
     background-image: url('../assets/black-queen.svg');
 }
 
-.black-king {
+.black.king {
     background-image: url('../assets/black-king.svg');
 }
 
-.black-pawn {
+.black.pawn {
     background-image: url('../assets/black-pawn.svg');
 }
