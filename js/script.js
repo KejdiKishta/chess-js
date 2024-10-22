@@ -1,20 +1,48 @@
-// cell number
-let cellnr = 64;
+// // cell number
+// let cellnr = 64;
+
+// //* CREATE BOARD
+// // 8 rows
+// for (let r = 0; r < 8; r++) {
+//     // foreach row 8 cells
+//     for (let c = 0; c < 8; c++) {
+
+//         // create cell, add classes needed, append cell to the board
+//         const cell = document.createElement('div');
+//         cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square' : 'dark-square');
+//         cell.setAttribute('data-cell', cellnr);
+//         document.querySelector('.board').appendChild(cell);
+
+//         // increment cell number
+//         cellnr--
+//     }
+// }
 
 //* CREATE BOARD
 // 8 rows
-for (let r = 0; r < 8; r++) {
-    // foreach row 8 cells
-    for (let c = 0; c < 8; c++) {
-
-        // create cell, add classes needed, append cell to the board
+for (let r = 72; r >= 65; r--) {
+    // from chart 'A' to chart 'H', the chessboard rows
+    const row = String.fromCharCode(r);
+    // 8 columns
+    for (let c = 1; c <= 8; c++) {
+        // create cell
         const cell = document.createElement('div');
-        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square' : 'dark-square');
-        cell.setAttribute('data-cell', cellnr);
+        // cell color pattern
+        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square ' : 'dark-square ') //to add notations + (r === 65 || c === 1 ? 'position-relative' : '');
+        
+        // set coordinates
+        cell.setAttribute('row', r);
+        cell.setAttribute('col', c);
+        
+        // Append cell to board
         document.querySelector('.board').appendChild(cell);
 
-        // increment cell number
-        cellnr--
+        //to add notations
+        // if (r === 65 || c === 1) {
+        //     const notation = document.createElement('span');
+        //     notation.className = 'position-absolute start-0 bottom-0';
+            
+        // }
     }
 }
 
@@ -48,10 +76,13 @@ for (let c = 1; c <= 64; c++) {
     }
 }
 
+
+//* MOVE AND CAPTURE
 // select all pieces
 const cells = document.querySelectorAll('.cell');
 // variable for the piece to move
 let selectedPiece;
+let allowedMoves;
 
 cells.forEach(cell => {
     // event listener for all the cells
@@ -66,15 +97,14 @@ cells.forEach(cell => {
         }
         // if we have already selected a piece and we select another cell different from the one selected
         else if (selectedPiece && (piece !== selectedPiece)) {
-            // console.log(selectedPiece, piece);
             // if piece is null we simply move, if there is a opponent piece we capture
             if (piece && ((piece.classList.contains('black') && selectedPiece.classList.contains('white')) || (piece.classList.contains('white') && selectedPiece.classList.contains('black')))) {
                 cell.removeChild(piece);
                 cell.appendChild(selectedPiece);
-                console.log('piece moved with capture');
+                console.log(selectedPiece.classList + ' captured ' + piece.classList);
             } else if (!piece) {
                 cell.appendChild(selectedPiece);
-                console.log('piece moved');
+                console.log(selectedPiece.classList + ' moved');
             }
 
             // Deseleziona il pezzo dopo lo spostamento
