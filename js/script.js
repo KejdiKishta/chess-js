@@ -47,35 +47,51 @@ for (let r = 72; r >= 65; r--) {
 }
 
 //* CREATE PIECES INITIAL POSITION
-for (let c = 1; c <= 64; c++) {
-    let piece;
-
-    // create piece
-    if (c < 17 || c > 48) {
-        piece = document.createElement('div');
-    }
+// rows
+for (let r = 72; r >= 65; r--) {
+    const row = String.fromCharCode(r);
     
-    if (piece) {
-        // define piece type
-        if (c === 1 || c === 8 || c === 57 || c === 64) {
-            piece.className = (c === 1 || c === 8 ? 'white rook' : 'black rook');
-        } else if (c === 2 || c === 7 || c === 58 || c === 63) { 
-            piece.className = (c === 2 || c === 7 ? 'white knight' : 'black knight');
-        } else if (c === 3 || c === 6 || c === 59 || c === 62) {
-            piece.className = (c === 3 || c === 6 ? 'white bishop' : 'black bishop');
-        } else if (c === 4 || c === 60) {
-            piece.className = (c === 4 ? 'white king' : 'black king');
-        }  else if (c === 5 || c === 61) {
-            piece.className = (c === 5 ? 'white queen' : 'black queen')
-        } else if ((c > 8 && c < 17) || (c > 48 && c < 57)) {
-            piece.className = (c > 8 && c < 17 ? 'white pawn' : 'black pawn')
+    // columns
+    for (let c = 1; c <= 8; c++) {
+        // class with the piece img
+        let pieceClass;
+
+        // Define piece type
+        // row H
+        if (r === 72) {
+            if (c === 1 || c === 8) pieceClass = 'black rook';
+            else if (c === 2 || c === 7) pieceClass = 'black knight';
+            else if (c === 3 || c === 6) pieceClass = 'black bishop';
+            else if (c === 4) pieceClass = 'black queen';
+            else if (c === 5) pieceClass = 'black king';
+        }
+        // Row G
+        else if (r === 71) { 
+            pieceClass = 'black pawn';
+        }
+        // Row A
+        else if (r === 65) {
+            if (c === 1 || c === 8) pieceClass = 'white rook';
+            else if (c === 2 || c === 7) pieceClass = 'white knight';
+            else if (c === 3 || c === 6) pieceClass = 'white bishop';
+            else if (c === 4) pieceClass = 'white queen';
+            else if (c === 5) pieceClass = 'white king';
+        }
+        // Row B
+        else if (r === 66) {
+            pieceClass = 'white pawn';
         }
 
-        // add piece
-        document.querySelector(`[data-cell='${c}']`).appendChild(piece);
+        // If there's a piece class, create the piece
+        if (pieceClass) {
+            const piece = document.createElement('div');
+            piece.className = pieceClass;
+
+            // Add the piece to the correct cell
+            const cell = document.querySelector(`[row='${r}'][col='${c}']`).appendChild(piece);
+        }
     }
 }
-
 
 //* MOVE AND CAPTURE
 // select all pieces
