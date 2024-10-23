@@ -45,12 +45,14 @@ body {
     position: absolute;
     top: 2px;
     left: 2px;
+    pointer-events: none;
 }
 
 .notation-numbers {
     position: absolute;
     bottom: 2px;
     right: 2px;
+    pointer-events: none;
 }
 
 

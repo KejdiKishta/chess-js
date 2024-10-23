@@ -96,7 +96,8 @@ for (let r = 104; r >= 97; r--) {
             piece.className = pieceClass;
 
             // Add the piece to the correct cell
-            const cell = document.querySelector(`[row='${r}'][col='${c}']`).appendChild(piece);
+            const cell = document.querySelector(`[row='${r}'][col='${c}']`);
+            cell.insertBefore(piece, cell.firstChild);
         }
     }
 }
@@ -106,13 +107,19 @@ for (let r = 104; r >= 97; r--) {
 const cells = document.querySelectorAll('.cell');
 // variable for the piece to move
 let selectedPiece;
-let allowedMoves;
+// let allowedMoves;
 
 cells.forEach(cell => {
     // event listener for all the cells
-    cell.addEventListener('click', () => {
+    cell.addEventListener('click', (event) => {
+
+        let piece = null;
+        
+        // if on click we dont select a piece (black or white class) then we 
+        if (event.target.classList.contains('black') || event.target.classList.contains('white')) {
+            piece = cell.firstChild;
+        }
         // if we click a piece, we save it here
-        const piece = cell.firstChild;
 
         // if there is a piece and we have not selected one yet, we select the piece
         if (piece && !selectedPiece) {
@@ -124,11 +131,11 @@ cells.forEach(cell => {
             // if piece is null we simply move, if there is a opponent piece we capture
             if (piece && ((piece.classList.contains('black') && selectedPiece.classList.contains('white')) || (piece.classList.contains('white') && selectedPiece.classList.contains('black')))) {
                 cell.removeChild(piece);
-                cell.appendChild(selectedPiece);
-                console.log(selectedPiece.classList + ' captured ' + piece.classList);
+                cell.insertBefore(selectedPiece, cell.firstChild);
+                console.log(selectedPiece.classList + ' takes ' + String.fromCharCode(parseInt(cell.getAttribute('row'))) + cell.getAttribute('col'));
             } else if (!piece) {
-                cell.appendChild(selectedPiece);
-                console.log(selectedPiece.classList + ' moved');
+                cell.insertBefore(selectedPiece, cell.firstChild);
+                console.log(selectedPiece.classList + ' moves to ' + String.fromCharCode(parseInt(cell.getAttribute('row'))) + cell.getAttribute('col'));
             }
 
             // Deseleziona il pezzo dopo lo spostamento
