@@ -33,11 +33,26 @@ body {
 
 .light-square {
     background-color: #e8f5e9;
+    color: lightseagreen;
 }
 
 .dark-square {
     background-color: #c8e6c9;
+    color: lightseagreen;
 }
+
+.notation-letters {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.notation-numbers {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
 
 /* *PIECES IMG */
 

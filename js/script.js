@@ -20,7 +20,7 @@
 
 //* CREATE BOARD
 // 8 rows
-for (let r = 72; r >= 65; r--) {
+for (let r = 104; r >= 97; r--) {
     // from chart 'A' to chart 'H', the chessboard rows
     const row = String.fromCharCode(r);
     // 8 columns
@@ -28,7 +28,7 @@ for (let r = 72; r >= 65; r--) {
         // create cell
         const cell = document.createElement('div');
         // cell color pattern
-        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square ' : 'dark-square ') //to add notations + (r === 65 || c === 1 ? 'position-relative' : '');
+        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square ' : 'dark-square ') + (r === 97 || c === 1 ? 'position-relative' : '');
         
         // set coordinates
         cell.setAttribute('row', r);
@@ -38,17 +38,25 @@ for (let r = 72; r >= 65; r--) {
         document.querySelector('.board').appendChild(cell);
 
         //to add notations
-        // if (r === 65 || c === 1) {
-        //     const notation = document.createElement('span');
-        //     notation.className = 'position-absolute start-0 bottom-0';
-            
-        // }
+        if (c === 1) {
+            const notation = document.createElement('span');
+            notation.className = 'notation-letters';
+            notation.innerHTML = row;
+            cell.appendChild(notation);
+        }
+
+        if (r === 97) {
+            const notation = document.createElement('span');
+            notation.className = 'notation-numbers';
+            notation.innerHTML = c;
+            cell.appendChild(notation);
+        }
     }
 }
 
 //* CREATE PIECES INITIAL POSITION
 // rows
-for (let r = 72; r >= 65; r--) {
+for (let r = 104; r >= 97; r--) {
     const row = String.fromCharCode(r);
     
     // columns
@@ -58,7 +66,7 @@ for (let r = 72; r >= 65; r--) {
 
         // Define piece type
         // row H
-        if (r === 72) {
+        if (r === 104) {
             if (c === 1 || c === 8) pieceClass = 'black rook';
             else if (c === 2 || c === 7) pieceClass = 'black knight';
             else if (c === 3 || c === 6) pieceClass = 'black bishop';
@@ -66,11 +74,11 @@ for (let r = 72; r >= 65; r--) {
             else if (c === 5) pieceClass = 'black king';
         }
         // Row G
-        else if (r === 71) { 
+        else if (r === 103) { 
             pieceClass = 'black pawn';
         }
         // Row A
-        else if (r === 65) {
+        else if (r === 97) {
             if (c === 1 || c === 8) pieceClass = 'white rook';
             else if (c === 2 || c === 7) pieceClass = 'white knight';
             else if (c === 3 || c === 6) pieceClass = 'white bishop';
@@ -78,7 +86,7 @@ for (let r = 72; r >= 65; r--) {
             else if (c === 5) pieceClass = 'white king';
         }
         // Row B
-        else if (r === 66) {
+        else if (r === 98) {
             pieceClass = 'white pawn';
         }
 
