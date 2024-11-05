@@ -1,145 +1,116 @@
-// // cell number
-// let cellnr = 64;
+// class for pieces
+class ChessPiece {
+    // constructor with piece type, color and if it has been moved
+    constructor(type, color) {
+        this.type = type;
+        this.color = color;
+        this.hasMoved = false;
+    }
 
-// //* CREATE BOARD
-// // 8 rows
-// for (let r = 0; r < 8; r++) {
-//     // foreach row 8 cells
-//     for (let c = 0; c < 8; c++) {
+    // when we move the piece, call this method to chande the condition from false to true
+    markAsMoved() {
+        this.hasMoved = true;
+    }
 
-//         // create cell, add classes needed, append cell to the board
-//         const cell = document.createElement('div');
-//         cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square' : 'dark-square');
-//         cell.setAttribute('data-cell', cellnr);
-//         document.querySelector('.board').appendChild(cell);
+    // get classes
+    getPieceClass() {
+        return `${this.color} ${this.type}`;
+    }
+}
 
-//         // increment cell number
-//         cellnr--
-//     }
-// }
+// cell class
+class ChessCell {
+    // constructor with coordinates and color of the cell
+    constructor(row, col, color) {
+        this.row = row;
+        this.col = col;
+        this.color = color;
+        this.piece = null;
+    }
 
-//* CREATE BOARD
-// 8 rows
-for (let r = 104; r >= 97; r--) {
-    // from chart 'A' to chart 'H', the chessboard rows
-    const row = String.fromCharCode(r);
-    // 8 columns
-    for (let c = 1; c <= 8; c++) {
-        // create cell
-        const cell = document.createElement('div');
-        // cell color pattern
-        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square ' : 'dark-square ') + (r === 97 || c === 1 ? 'position-relative' : '');
-        
-        // set coordinates
-        cell.setAttribute('row', r);
-        cell.setAttribute('col', c);
-        
-        // Append cell to board
-        document.querySelector('.board').appendChild(cell);
+    // function to put pieces in the cells
+    setPiece(piece) {
+        this.piece = piece;
+    }
 
-        //to add notations
-        if (c === 1) {
+    // preparing cells
+    render() {
+        const cellElement = document.createElement('div');
+        cellElement.className = `cell ${this.color} position-relative`;
+        cellElement.setAttribute('data-row', this.row);
+        cellElement.setAttribute('data-col', this.col);
+
+        // if there is a piece we append it in the cell
+        if (this.piece) {
+            const pieceElement = document.createElement('div');
+            pieceElement.className = this.piece.getPieceClass();
+            cellElement.appendChild(pieceElement);
+        }
+
+        // letter notation
+        if (this.row === 1) {
             const notation = document.createElement('span');
             notation.className = 'notation-letters';
-            notation.innerHTML = row;
-            cell.appendChild(notation);
+            notation.innerHTML = this.col;
+            cellElement.appendChild(notation);
         }
 
-        if (r === 97) {
+        // number notations
+        if (this.col === 'a') {
             const notation = document.createElement('span');
             notation.className = 'notation-numbers';
-            notation.innerHTML = c;
-            cell.appendChild(notation);
+            notation.innerHTML = this.row;
+            cellElement.appendChild(notation);
         }
+
+        return cellElement;
     }
 }
 
-//* CREATE PIECES INITIAL POSITION
-// rows
-for (let r = 104; r >= 97; r--) {
-    const row = String.fromCharCode(r);
+// create chessboard
+function createChessBoard() {
+    const rows = 8;
+    const columns = 8;
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const boardElement = document.querySelector('.board');
     
-    // columns
-    for (let c = 1; c <= 8; c++) {
-        // class with the piece img
-        let pieceClass;
+    // set up with arrays, the keys are the rows
+    const pieceSetup = {
+        8: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
+        7: Array(8).fill('pawn'),
+        2: Array(8).fill('pawn'),
+        1: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
+    };
 
-        // Define piece type
-        // row H
-        if (r === 104) {
-            if (c === 1 || c === 8) pieceClass = 'black rook';
-            else if (c === 2 || c === 7) pieceClass = 'black knight';
-            else if (c === 3 || c === 6) pieceClass = 'black bishop';
-            else if (c === 4) pieceClass = 'black queen';
-            else if (c === 5) pieceClass = 'black king';
-        }
-        // Row G
-        else if (r === 103) { 
-            pieceClass = 'black pawn';
-        }
-        // Row A
-        else if (r === 97) {
-            if (c === 1 || c === 8) pieceClass = 'white rook';
-            else if (c === 2 || c === 7) pieceClass = 'white knight';
-            else if (c === 3 || c === 6) pieceClass = 'white bishop';
-            else if (c === 4) pieceClass = 'white queen';
-            else if (c === 5) pieceClass = 'white king';
-        }
-        // Row B
-        else if (r === 98) {
-            pieceClass = 'white pawn';
-        }
+    // foreach row 8 column
+    for (let r = rows; r > 0; r--) {
+        // foreach column
+        for (let c = 0; c < columns; c++) {
+            // we alternate light and dark square 
+            const color = (r + c) % 2 === 0 ? 'light-square' : 'dark-square';
+            // call the class with row, column and cell color
+            const cell = new ChessCell(r, letters[c], color);
 
-        // If there's a piece class, create the piece
-        if (pieceClass) {
-            const piece = document.createElement('div');
-            piece.className = pieceClass;
+            // if r is an existing key in pieceSetup we take the cooresponding piece, else the piece is null
+            const pieceType = pieceSetup[r] ? pieceSetup[r][c] : null;
+            // define the color of the piece
+            if (pieceType) {
+                const pieceColor = r > 4 ? 'black' : 'white';
+                // create a class piece with type and color
+                const piece = new ChessPiece(pieceType, pieceColor);
+                // add the piece to the cell
+                cell.setPiece(piece);
 
-            // Add the piece to the correct cell
-            const cell = document.querySelector(`[row='${r}'][col='${c}']`);
-            cell.insertBefore(piece, cell.firstChild);
-        }
-    }
-}
-
-//* MOVE AND CAPTURE
-// select all pieces
-const cells = document.querySelectorAll('.cell');
-// variable for the piece to move
-let selectedPiece;
-// let allowedMoves;
-
-cells.forEach(cell => {
-    // event listener for all the cells
-    cell.addEventListener('click', (event) => {
-
-        let piece = null;
-        
-        // if on click we dont select a piece (black or white class) then we 
-        if (event.target.classList.contains('black') || event.target.classList.contains('white')) {
-            piece = cell.firstChild;
-        }
-        // if we click a piece, we save it here
-
-        // if there is a piece and we have not selected one yet, we select the piece
-        if (piece && !selectedPiece) {
-            selectedPiece = piece;
-            console.log('piece selected');
-        }
-        // if we have already selected a piece and we select another cell different from the one selected
-        else if (selectedPiece && (piece !== selectedPiece)) {
-            // if piece is null we simply move, if there is a opponent piece we capture
-            if (piece && ((piece.classList.contains('black') && selectedPiece.classList.contains('white')) || (piece.classList.contains('white') && selectedPiece.classList.contains('black')))) {
-                cell.removeChild(piece);
-                cell.insertBefore(selectedPiece, cell.firstChild);
-                console.log(selectedPiece.classList + ' takes ' + String.fromCharCode(parseInt(cell.getAttribute('row'))) + cell.getAttribute('col'));
-            } else if (!piece) {
-                cell.insertBefore(selectedPiece, cell.firstChild);
-                console.log(selectedPiece.classList + ' moves to ' + String.fromCharCode(parseInt(cell.getAttribute('row'))) + cell.getAttribute('col'));
+                console.log('Piece:', piece);
             }
 
-            // Deseleziona il pezzo dopo lo spostamento
-            selectedPiece = null;
+            console.log('Cell:', cell);
+
+            // append the cell in the board
+            boardElement.appendChild(cell.render());
         }
-    });
-});
+    }
+}
+
+// call the function to add the board
+createChessBoard();

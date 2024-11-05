@@ -41,14 +41,14 @@ body {
     color: lightseagreen;
 }
 
-.notation-letters {
+.notation-numbers {
     position: absolute;
     top: 2px;
     left: 2px;
     pointer-events: none;
 }
 
-.notation-numbers {
+.notation-letters {
     position: absolute;
     bottom: 2px;
     right: 2px;
