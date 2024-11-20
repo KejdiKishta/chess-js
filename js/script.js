@@ -1,6 +1,8 @@
-//* CREATE BOARD
 // object containing all cells
 let cells = {};
+
+// we save a cell when selected
+let selectedCellKey = null;
 
 // class for pieces
 class Piece {
@@ -90,12 +92,75 @@ for (let [key, value] of Object.entries(cells)) {
         cell.appendChild(piece);
     }
 
-    // get object in case is needed
+    // select and move pieces
     cell.addEventListener('click', () => {
-        const clickedCell = cells[key];
-        console.log(clickedCell);
+        // key of the object and element in the DOM
+        select(key, cell);
     });
 
     // create cell
     board.appendChild(cell);
+}
+
+//* FUNCTIONS
+
+function select(key, cell) {
+    const clickedCell = cells[key];
+
+    // if we havent selected yet a cell and it contains a piece
+    if (selectedCellKey === null && clickedCell.piece) {
+        selectedCellKey = key;
+        cell.classList.add('selected');
+        console.log(key + ' selected');
+    } else if (selectedCellKey !== null) {
+        // key of the selected cell, key of the second cell
+        movePiece(selectedCellKey, key);
+        selectedCellKey = null;
+        document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    }
+}
+
+function movePiece(fromCellKey, toCellKey) {
+    const fromCell = cells[fromCellKey];
+    const toCell = cells[toCellKey];
+
+    // if there is a piece in the cell we want to move
+    if (toCell.piece) {
+        // if the pieces have the same color the move is invalid
+        if (toCell.piece.color === fromCell.piece.color) {
+            console.log("You cant capture your own pieces");
+            return;
+        } else {
+            // select cell in DOM
+            const toElement = document.querySelector(`[data-name="${toCellKey}"]`);
+            // select piece
+            const capturedPiece = toElement.querySelector('div');
+
+            // if there is a piece in the destination cell remove it
+            if (capturedPiece) {
+                toElement.removeChild(capturedPiece);
+            }
+
+            console.log(`Captured ${toCell.piece.color} ${toCell.piece.type} on ${toCellKey}`);
+        }
+    }
+
+    // update the cells object
+    toCell.piece = fromCell.piece;
+    fromCell.piece = null;
+
+    // update DOM
+    const fromElement = document.querySelector(`[data-name="${fromCellKey}"]`);
+    const toElement = document.querySelector(`[data-name="${toCellKey}"]`);
+    const pieceElement = fromElement.querySelector('div');
+
+    if (pieceElement) {
+        fromElement.removeChild(pieceElement);
+        toElement.appendChild(pieceElement);
+    }
+
+    // Update piece status
+    toCell.piece.hasMoved = true;
+
+    console.log(`Moved ${toCell.piece.type} from ${fromCellKey} to ${toCellKey}`);
 }
