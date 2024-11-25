@@ -1,72 +1,72 @@
 //* CREATE BOARD
 // 8 rows
-for (let r = 104; r >= 97; r--) {
-    // from chart 'A' to chart 'H', the chessboard rows
-    const row = String.fromCharCode(r);
-    // 8 columns
-    for (let c = 1; c <= 8; c++) {
+for (let r = 8; r >= 1; r--) {     // from chart '8' to chart '1', the chessboard rows
+    for (let c = 97; c <= 104; c++) {     // from 'a' to 'h', the chessboard columns
+        const col = String.fromCharCode(c);     // get column as character
+        
         // create cell
         const cell = document.createElement('div');
+        
         // cell color pattern
-        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square ' : 'dark-square ') + (r === 97 || c === 1 ? 'position-relative' : '');
+        cell.className = 'cell ' + ((r + c) % 2 === 0 ? 'light-square ' : 'dark-square ') + (c === 97 || r === 1 ? 'position-relative' : '');
         
         // set coordinates
         cell.setAttribute('row', r);
-        cell.setAttribute('col', c);
+        cell.setAttribute('col', col);
         
         // Append cell to board
         document.querySelector('.board').appendChild(cell);
-
-        //to add notations
-        if (c === 1) {
-            const notation = document.createElement('span');
-            notation.className = 'notation-letters';
-            notation.innerHTML = row;
-            cell.appendChild(notation);
-        }
-
-        if (r === 97) {
+        
+        // to add notations
+        if (c === 97) {     // add row notation (numbers)
             const notation = document.createElement('span');
             notation.className = 'notation-numbers';
-            notation.innerHTML = c;
+            notation.innerHTML = r;
+            cell.appendChild(notation);
+        }
+        
+        if (r === 1) {     // add column notation (letters)
+            const notation = document.createElement('span');
+            notation.className = 'notation-letters';
+            notation.innerHTML = col;
             cell.appendChild(notation);
         }
     }
 }
 
+
 //* CREATE PIECES INITIAL POSITION
 // rows
-for (let r = 104; r >= 97; r--) {
-    const row = String.fromCharCode(r);
-    
-    // columns
-    for (let c = 1; c <= 8; c++) {
+for (let r = 8; r >= 1; r--) {     // from chart '8' to chart '1', the chessboard rows
+    for (let c = 97; c <= 104; c++) {     // from 'a' to 'h', the chessboard columns
+        const col = String.fromCharCode(c);     // get column as character
+        
         // class with the piece img
         let pieceClass;
 
         // Define piece type
-        // row H
-        if (r === 104) {
-            if (c === 1 || c === 8) pieceClass = 'black rook';
-            else if (c === 2 || c === 7) pieceClass = 'black knight';
-            else if (c === 3 || c === 6) pieceClass = 'black bishop';
-            else if (c === 4) pieceClass = 'black queen';
-            else if (c === 5) pieceClass = 'black king';
+        // row 8
+        if (r === 8) {
+            if (col === 'a' || col === 'h') pieceClass = 'black rook';
+            else if (col === 'b' || col === 'g') pieceClass = 'black knight';
+            else if (col === 'c' || col === 'f') pieceClass = 'black bishop';
+            else if (col === 'd') pieceClass = 'black queen';
+            else if (col === 'e') pieceClass = 'black king';
         }
-        // Row G
-        else if (r === 103) { 
+        // Row 7
+        else if (r === 7) { 
             pieceClass = 'black pawn';
         }
-        // Row A
-        else if (r === 97) {
-            if (c === 1 || c === 8) pieceClass = 'white rook';
-            else if (c === 2 || c === 7) pieceClass = 'white knight';
-            else if (c === 3 || c === 6) pieceClass = 'white bishop';
-            else if (c === 4) pieceClass = 'white queen';
-            else if (c === 5) pieceClass = 'white king';
+        // Row 1
+        else if (r === 1) {
+            if (col === 'a' || col === 'h') pieceClass = 'white rook';
+            else if (col === 'b' || col === 'g') pieceClass = 'white knight';
+            else if (col === 'c' || col === 'f') pieceClass = 'white bishop';
+            else if (col === 'd') pieceClass = 'white queen';
+            else if (col === 'e') pieceClass = 'white king';
         }
-        // Row B
-        else if (r === 98) {
+        // Row 2
+        else if (r === 2) {
             pieceClass = 'white pawn';
         }
 
@@ -76,7 +76,7 @@ for (let r = 104; r >= 97; r--) {
             piece.className = pieceClass;
 
             // Add the piece to the correct cell
-            const cell = document.querySelector(`[row='${r}'][col='${c}']`);
+            const cell = document.querySelector(`[row='${r}'][col='${col}']`);
             cell.insertBefore(piece, cell.firstChild);
         }
     }
@@ -111,10 +111,10 @@ cells.forEach(cell => {
             if (piece && ((piece.classList.contains('black') && selectedPiece.classList.contains('white')) || (piece.classList.contains('white') && selectedPiece.classList.contains('black')))) {
                 cell.removeChild(piece);
                 cell.insertBefore(selectedPiece, cell.firstChild);
-                console.log(selectedPiece.classList + ' takes ' + String.fromCharCode(parseInt(cell.getAttribute('row'))) + cell.getAttribute('col'));
+                console.log(selectedPiece.classList + ' takes ' + cell.getAttribute('col') +  cell.getAttribute('row'));
             } else if (!piece) {
                 cell.insertBefore(selectedPiece, cell.firstChild);
-                console.log(selectedPiece.classList + ' moves to ' + String.fromCharCode(parseInt(cell.getAttribute('row'))) + cell.getAttribute('col'));
+                console.log(selectedPiece.classList + ' moves to ' + cell.getAttribute('col') +  cell.getAttribute('row'));
             }
 
             // Deseleziona il pezzo dopo lo spostamento

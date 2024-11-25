@@ -162,5 +162,5 @@ function movePiece(fromCellKey, toCellKey) {
     // Update piece status
     toCell.piece.hasMoved = true;
 
-    console.log(`Moved ${toCell.piece.type} from ${fromCellKey} to ${toCellKey}`);
+    console.log(`Moved ${toCell.piece.color} ${toCell.piece.type} from ${fromCellKey} to ${toCellKey}`);
 }
