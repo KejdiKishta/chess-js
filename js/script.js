@@ -112,17 +112,33 @@ function select(key, cell) {
         selectedCellKey = key;
         cell.classList.add('selected');
         console.log(key + ' selected');
+
+        // valid moves function
+        const validMoves = getValidMoves(key);
+        validMoves.forEach(moveKey => {
+            const targetCell = document.querySelector(`[data-name="${moveKey}"]`);
+            targetCell.classList.add('moves');
+        });
     } else if (selectedCellKey !== null) {
         // key of the selected cell, key of the second cell
         movePiece(selectedCellKey, key);
         selectedCellKey = null;
-        document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
-    }
+        document.querySelectorAll('.cell').forEach(el => el.classList.remove('selected', 'moves'));
+    }   
 }
 
 function movePiece(fromCellKey, toCellKey) {
     const fromCell = cells[fromCellKey];
     const toCell = cells[toCellKey];
+
+    // take valid moves
+    const validMoves = getValidMoves(fromCellKey);
+
+    // if valid moves doesn't include the key
+    if (!validMoves.includes(toCellKey)) {
+        console.log("Invalid move");
+        return;
+    }
 
     // if there is a piece in the cell we want to move
     if (toCell.piece) {
@@ -163,4 +179,132 @@ function movePiece(fromCellKey, toCellKey) {
     toCell.piece.hasMoved = true;
 
     console.log(`Moved ${toCell.piece.color} ${toCell.piece.type} from ${fromCellKey} to ${toCellKey}`);
+}
+
+// argument is the cell name
+function getValidMoves(cellKey) {
+
+    // get the cell from the object
+    const cell = cells[cellKey];
+    // check any error
+    if (!cell.piece) return [];
+
+    //save the piece
+    const piece = cell.piece;
+    // get the col and row coordinates separated
+    const [col, row] = [cellKey.charAt(0), parseInt(cellKey.charAt(1))];
+    // directions that a piece can take
+    const directions = [];
+    // possible moves
+    const moves = [];
+
+    switch (piece.type) {
+        case 'pawn':
+            // if white piece move +1 if black -1 because it moves from the end to the start of the board
+            const direction = piece.color === 'white' ? 1 : -1;
+
+            // if the the cell next to the pawn is empty add the cell to the moves array
+            // example pawn in e2 -> cells[col=e row=2(row)+1(direction)]
+            if (!cells[`${col}${row + direction}`]?.piece) {
+                moves.push(`${col}${row + direction}`);
+                // if the piece hasn't moved yet. push the 2 cell move
+                if (!piece.hasMoved && !cells[`${col}${row + 2 * direction}`]?.piece) {
+                    moves.push(`${col}${row + 2 * direction}`);
+                }
+            }
+            // control diagonals
+            for (let adjacentCol of [-1, 1]) {
+                // we move to the adjacent col, we add 1 or -1 to the charcode of the current col
+                // if 'e' we iterate 'd' and 'f'
+                const targetCol = String.fromCharCode(col.charCodeAt(0) + adjacentCol);
+                // if 'e2' we have 'd3' and 'f3'
+                const targetCell = cells[`${targetCol}${row + direction}`];
+                //if there is an opponent piece we add the move
+                if (targetCell?.piece && targetCell.piece.color !== piece.color) {
+                    moves.push(`${targetCol}${row + direction}`);
+                }
+            }
+            break;
+
+        case 'rook':
+            directions.length = 0;
+            //               right -  left  -  up  -  down
+            directions.push([1, 0], [-1, 0], [0, 1], [0, -1]);
+            break;
+
+        case 'bishop':
+            directions.length = 0;
+            //            rightup - leftdown - rightdown - leftup
+            directions.push([1, 1], [-1, -1], [1, -1], [-1, 1]);
+            break;
+
+        case 'queen':
+            directions.length = 0;
+            //             right -  left  -   up   - down - rightup - leftdown - rightdown - leftup
+            directions.push([1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]);
+            break;
+
+        case 'king':
+            directions.length = 0;
+            //             right -  left  -   up   - down - rightup - leftdown - rightdown - leftup
+            directions.push([1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]);
+            // foreach move same controls as the other pieces
+            for (const [dx, dy] of directions) {
+                const targetCol = String.fromCharCode(col.charCodeAt(0) + dx);
+                const targetRow = row + dy;
+                const targetCell = cells[`${targetCol}${targetRow}`];
+                if (targetCell && (!targetCell.piece || targetCell.piece.color !== piece.color)) {
+                    moves.push(`${targetCol}${targetRow}`);
+                }
+            }
+            return moves;
+
+        case 'knight':
+            directions.length = 0;
+            const knightMoves = [
+                [2, 1], [2, -1], [-2, 1], [-2, -1],
+                [1, 2], [1, -2], [-1, 2], [-1, -2],
+            ];
+            // foreach move of the knight
+            for (const [dx, dy] of knightMoves) {
+                // select the col
+                const targetCol = String.fromCharCode(col.charCodeAt(0) + dx);
+                // select the row
+                const targetRow = row + dy;
+                // final cell
+                const targetCell = cells[`${targetCol}${targetRow}`];
+                // if the cell exists and it doesn't contain a piece with the same color add the move 
+                if (targetCell && (!targetCell.piece || targetCell.piece.color !== piece.color)) {
+                    moves.push(`${targetCol}${targetRow}`);
+                }
+            }
+            return moves;
+    }
+
+    // Add logic for rook, bishop, and queen to handle linear movement
+    for (const [dx, dy] of directions) {
+        let targetCol = col;
+        let targetRow = row;
+        // infinite cicle, it ends only when we reach the break line
+        while (true) {
+            targetCol = String.fromCharCode(targetCol.charCodeAt(0) + dx);
+            targetRow += dy;
+
+            const targetCell = cells[`${targetCol}${targetRow}`];
+            if (!targetCell) break; // ends the cicle
+
+            // if empty cell add move
+            if (!targetCell.piece) {
+                moves.push(`${targetCol}${targetRow}`);
+            } else {
+                // if there is a opponent piece add move
+                if (targetCell.piece.color !== piece.color) {
+                    moves.push(`${targetCol}${targetRow}`);
+                }
+                break; // ends the cicle
+            }
+        }
+    }
+
+    return moves;
 }
