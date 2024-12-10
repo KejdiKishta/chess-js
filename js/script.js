@@ -257,6 +257,19 @@ function getValidMoves(cellKey) {
                     moves.push(`${targetCol}${targetRow}`);
                 }
             }
+
+            
+            if (!piece.hasMoved) {
+                // short castle
+                // select rook cell
+                const kingsRook = cells[`h${row}`];
+                if (kingsRook.piece && !kingsRook.piece.hasMoved) {
+                    const cellsBeetwen = [`f${row}`,`g${row}`];
+                    if (!cells[cellsBeetwen[0]].piece && !cells[cellsBeetwen[1]].piece) {
+                        moves.push(`g${row}`);
+                    }
+                }
+            }
             return moves;
 
         case 'knight':
