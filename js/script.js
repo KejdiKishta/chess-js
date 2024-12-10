@@ -156,7 +156,21 @@ function movePiece(fromCellKey, toCellKey) {
             rookElement.parentNode.removeChild(rookElement);
             rookToElement.appendChild(rookElement);
             console.log('short castle');
-            
+        }
+        // long castle
+        if (toCellKey === `c${fromCellKey.charAt(1)}`) {
+            // rook targets
+            const rookFrom = `a${fromCellKey.charAt(1)}`;
+            const rookTo = `d${fromCellKey.charAt(1)}`;
+            // move the rook in cells objects
+            cells[rookTo].piece = cells[rookFrom].piece;
+            cells[rookFrom].piece = null;
+            // move the rook in DOM
+            const rookElement = document.querySelector(`[data-name="${rookFrom}"] div`);
+            const rookToElement = document.querySelector(`[data-name="${rookTo}"]`);
+            rookElement.parentNode.removeChild(rookElement);
+            rookToElement.appendChild(rookElement);
+            console.log('long castle');
         }
     }
 
