@@ -289,6 +289,16 @@ function getValidMoves(cellKey) {
                         moves.push(`g${row}`);
                     }
                 }
+
+                // long castle
+                // select rook cell
+                const queensRook = cells[`a${row}`]
+                if (queensRook.piece && !queensRook.piece.hasMoved) {
+                    const cellsBeetwen = [`b${row}`,`c${row}`, `d${row}`];
+                    if (!cells[cellsBeetwen[0]].piece && !cells[cellsBeetwen[1]].piece && !cells[cellsBeetwen[2]].piece) {
+                        moves.push(`c${row}`);
+                    }
+                }
             }
             return moves;
 
